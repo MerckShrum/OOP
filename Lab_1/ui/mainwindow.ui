@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0" />
+    <object class="GtkWindow" id="window">
+        <property name="title">Кибербуллинг</property>
+        <property name="default-width">1280</property>
+        <property name="default-height">720</property>
+        <style>
+            <class name="style-window"/>
+        </style>
+
+        <child>
+            <object class="GtkGrid" id="grid">
+                <style>
+                    <class name="style-grid"/>
+                </style>
+                <property name="row-homogeneous">TRUE</property>
+                <property name="column-homogeneous">TRUE</property>
+
+                <child>
+                    <object class="GtkFrame" id="FrameMoving">
+                        <style>
+                            <class name="style-frame"/>
+                        </style>
+                        <property name="label">Перемещение</property>
+                        <layout>
+                            <property name="column">0</property>
+                            <property name="row">0</property>
+
+                            <property name="row-span">3</property>
+                            <property name="column-span">1</property>
+                        </layout>
+                        <child>
+                            <object class="GtkLabel" id="label1">
+                                <property name="label">Hello World</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkFrame" id="FrameRotation">
+                        <style>
+                            <class name="style-frame"/>
+                        </style>
+                        <property name="label">Вращение</property>
+                        <layout>
+                            <property name="column">0</property>
+                            <property name="row">3</property>
+
+                            <property name="row-span">3</property>
+                            <property name="column-span">1</property>
+                        </layout>
+                        <child>
+                            <object class="GtkLabel" id="label2">
+                                <property name="label">Hello World</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkFrame" id="FrameScaling">
+                        <style>
+                            <class name="style-frame"/>
+                        </style>
+                        <property name="label">Масштабирование</property>
+                        <layout>
+                            <property name="column">0</property>
+                            <property name="row">6</property>
+
+                            <property name="row-span">3</property>
+                            <property name="column-span">1</property>
+                        </layout>
+                        <child>
+                            <object class="GtkLabel" id="label3">
+                                <property name="label">Hello World</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkFrame" id="FrameFOV">
+                        <style>
+                            <class name="style-frame"/>
+                        </style>
+                        <property name="label">Поле зрения</property>
+                        <layout>
+                            <property name="column">0</property>
+                            <property name="row">9</property>
+
+                            <property name="row-span">2</property>
+                            <property name="column-span">1</property>
+                        </layout>
+                        <child>
+                            <object class="GtkLabel" id="label4">
+                                <property name="label">Hello World</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkFrame" id="FrameCanvas">
+                        <style>
+                            <class name="style-frame"/>
+                        </style>
+                        <layout>
+                            <property name="column">1</property>
+                            <property name="row">0</property>
+
+                            <property name="row-span">11</property>
+                            <property name="column-span">5</property>
+                        </layout>
+                        <child>
+                            <object class="GtkDrawingArea" id="drawing-area">
+
+                                <property name="hexpand">TRUE</property>
+                                <property name="vexpand">TRUE</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>

@@ -1,0 +1,16 @@
+.style-window
+{
+    font-size: 18px;
+    min-width: 800px;
+    min-height: 600px;
+}
+
+.style-grid
+{
+    margin: 10px;
+}
+
+.style-frame
+{
+    margin: 10px;
+}
