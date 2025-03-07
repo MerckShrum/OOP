@@ -23,6 +23,7 @@
                             <class name="style-frame"/>
                         </style>
                         <property name="label">Перемещение</property>
+                        <property name="label-xalign">0.5</property>
                         <layout>
                             <property name="column">0</property>
                             <property name="row">0</property>
@@ -133,6 +134,7 @@
                             <class name="style-frame"/>
                         </style>
                         <property name="label">Вращение</property>
+                        <property name="label-xalign">0.5</property>
                         <layout>
                             <property name="column">0</property>
                             <property name="row">3</property>
@@ -244,6 +246,7 @@
                             <class name="style-frame"/>
                         </style>
                         <property name="label">Масштабирование</property>
+                        <property name="label-xalign">0.5</property>
                         <layout>
                             <property name="column">0</property>
                             <property name="row">6</property>
@@ -252,8 +255,97 @@
                             <property name="column-span">1</property>
                         </layout>
                         <child>
-                            <object class="GtkLabel" id="label3">
-                                <property name="label">Чел</property>
+                            <object class="GtkGrid" id="gridScaling">
+                                <style>
+                                    <class name="style-grid"/>
+                                </style>
+                                <property name="row-homogeneous">TRUE</property>
+                                <property name="column-homogeneous">TRUE</property>
+                                <property name="row-spacing">5</property>
+                                <property name="column-spacing">5</property>
+                                <child>
+                                    <object class="GtkLabel" id="labelScalingX">
+                                        <property name="label">X</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonScalingXDec">
+                                        <property name="label">-</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonScalingXInc">
+                                        <property name="label">+</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel" id="labelScalingY">
+                                        <property name="label">Y</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonScalingYDec">
+                                        <property name="label">-</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonScalingYInc">
+                                        <property name="label">+</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel" id="labelScalingZ">
+                                        <property name="label">Z</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonScalingZDec">
+                                        <property name="label">-</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonScalingZInc">
+                                        <property name="label">+</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
@@ -265,6 +357,7 @@
                             <class name="style-frame"/>
                         </style>
                         <property name="label">Поле зрения</property>
+                        <property name="label-xalign">0.5</property>
                         <layout>
                             <property name="column">0</property>
                             <property name="row">9</property>
@@ -273,8 +366,19 @@
                             <property name="column-span">1</property>
                         </layout>
                         <child>
-                            <object class="GtkLabel" id="label4">
-                                <property name="label">Чел</property>
+                            <object class="GtkScale" id="scaleFOV">
+                                <property name="halign">GTK_ALIGN_FILL</property>
+                                <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+                                <property name="adjustment">
+                                    <object class="GtkAdjustment">
+                                        <property name="lower">0.0</property>
+                                        <property name="page-increment">0.0</property>
+                                        <property name="page-size">0.0</property>
+                                        <property name="step-increment">0.1</property>
+                                        <property name="upper">1.0</property>
+                                        <property name="value">0.5</property>
+                                    </object>
+                                </property>
                             </object>
                         </child>
                     </object>
