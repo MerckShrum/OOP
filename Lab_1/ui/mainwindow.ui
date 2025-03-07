@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <requires lib="gtk" version="4.0" />
-    <object class="GtkWindow" id="window">
+    <object class="GtkWindow" id="mainwindow">
         <property name="title">Кибербуллинг</property>
         <property name="default-width">1280</property>
         <property name="default-height">720</property>
@@ -10,7 +10,7 @@
         </style>
 
         <child>
-            <object class="GtkGrid" id="grid">
+            <object class="GtkGrid" id="gridMainwindow">
                 <style>
                     <class name="style-grid"/>
                 </style>
@@ -18,7 +18,7 @@
                 <property name="column-homogeneous">TRUE</property>
 
                 <child>
-                    <object class="GtkFrame" id="FrameMoving">
+                    <object class="GtkFrame" id="frameMoving">
                         <style>
                             <class name="style-frame"/>
                         </style>
@@ -31,15 +31,104 @@
                             <property name="column-span">1</property>
                         </layout>
                         <child>
-                            <object class="GtkLabel" id="label1">
-                                <property name="label">Hello World</property>
+                            <object class="GtkGrid" id="gridMoving">
+                                <style>
+                                    <class name="style-grid"/>
+                                </style>
+                                <property name="row-homogeneous">TRUE</property>
+                                <property name="column-homogeneous">TRUE</property>
+                                <property name="row-spacing">5</property>
+                                <property name="column-spacing">5</property>
+                                <child>
+                                    <object class="GtkLabel" id="labelMovingX">
+                                        <property name="label">X</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonMovingXInc">
+                                        <property name="label">🡯</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonMovingXDec">
+                                        <property name="label">🡭</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel" id="labelMovingY">
+                                        <property name="label">Y</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonMovingYDec">
+                                        <property name="label">🡨</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonMovingYInc">
+                                        <property name="label">🡪</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel" id="labelMovingZ">
+                                        <property name="label">Z</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonMovingZDec">
+                                        <property name="label">🡫</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonMovingZInc">
+                                        <property name="label">🡩</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
                 </child>
 
                 <child>
-                    <object class="GtkFrame" id="FrameRotation">
+                    <object class="GtkFrame" id="frameRotation">
                         <style>
                             <class name="style-frame"/>
                         </style>
@@ -52,15 +141,105 @@
                             <property name="column-span">1</property>
                         </layout>
                         <child>
-                            <object class="GtkLabel" id="label2">
-                                <property name="label">Hello World</property>
+                            <object class="GtkGrid" id="gridRotation">
+                                <style>
+                                    <class name="style-grid"/>
+                                </style>
+                                <property name="row-homogeneous">TRUE</property>
+                                <property name="column-homogeneous">TRUE</property>
+                                <property name="row-spacing">5</property>
+                                <property name="column-spacing">5</property>
+                                <child>
+                                    <object class="GtkLabel" id="labelRotationX">
+                                        <property name="label">X</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonRotationXDec">
+                                        <property name="label">↶</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonRotationXInc">
+                                        <property name="label">↷</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+
+                                <child>
+                                    <object class="GtkLabel" id="labelRotationY">
+                                        <property name="label">Y</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonRotationYDec">
+                                        <property name="label">↶</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonRotationYInc">
+                                        <property name="label">↷</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel" id="labelRotationZ">
+                                        <property name="label">Z</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonRotationZDec">
+                                        <property name="label">↶</property>
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="buttonRotationZInc">
+                                        <property name="label">↷</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
                 </child>
 
                 <child>
-                    <object class="GtkFrame" id="FrameScaling">
+                    <object class="GtkFrame" id="frameScaling">
                         <style>
                             <class name="style-frame"/>
                         </style>
@@ -74,14 +253,14 @@
                         </layout>
                         <child>
                             <object class="GtkLabel" id="label3">
-                                <property name="label">Hello World</property>
+                                <property name="label">Чел</property>
                             </object>
                         </child>
                     </object>
                 </child>
 
                 <child>
-                    <object class="GtkFrame" id="FrameFOV">
+                    <object class="GtkFrame" id="frameFOV">
                         <style>
                             <class name="style-frame"/>
                         </style>
@@ -95,14 +274,14 @@
                         </layout>
                         <child>
                             <object class="GtkLabel" id="label4">
-                                <property name="label">Hello World</property>
+                                <property name="label">Чел</property>
                             </object>
                         </child>
                     </object>
                 </child>
 
                 <child>
-                    <object class="GtkFrame" id="FrameCanvas">
+                    <object class="GtkFrame" id="frameCanvas">
                         <style>
                             <class name="style-frame"/>
                         </style>
@@ -114,8 +293,7 @@
                             <property name="column-span">5</property>
                         </layout>
                         <child>
-                            <object class="GtkDrawingArea" id="drawing-area">
-
+                            <object class="GtkDrawingArea" id="drawingArea">
                                 <property name="hexpand">TRUE</property>
                                 <property name="vexpand">TRUE</property>
                             </object>

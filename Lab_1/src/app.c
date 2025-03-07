@@ -8,7 +8,7 @@
 void app_activate (GtkApplication *app, gpointer *user_data) {
 
     GtkBuilder* builder = gtk_builder_new_from_file("../ui/mainwindow.ui");
-    GObject* window = gtk_builder_get_object (builder, "window");
+    GObject* window = gtk_builder_get_object (builder, "mainwindow");
     gtk_window_set_application(GTK_WINDOW(window), app);
 
     // Загрузка CSS
@@ -26,6 +26,4 @@ void app_activate (GtkApplication *app, gpointer *user_data) {
     g_object_unref (builder);
     // Показ окна
     gtk_window_present(GTK_WINDOW(window));
-    // gtk_window_set_application (GTK_WINDOW (window), app);
-    // gtk_window_present (GTK_WINDOW (window));
 }
