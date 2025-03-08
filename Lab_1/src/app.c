@@ -5,10 +5,24 @@
 #include "../inc/app.h"
 
 
-void app_activate (GtkApplication *app, gpointer *user_data) {
+void app_activate (GtkApplication *app, gpointer *user_data)
+{
 
     GtkBuilder* builder = gtk_builder_new_from_file("../ui/mainwindow.ui");
     GObject* window = gtk_builder_get_object (builder, "mainwindow");
+
+    // Создание модели меню "Файл"
+    GMenu *file_menu = g_menu_new();
+    // g_menu_append(file_menu, "Новый", "app.new");
+    g_menu_append(file_menu, "Открыть", "app.open");
+    // g_menu_append(file_menu, "Сохранить", "app.save");
+    // g_menu_append(file_menu, "Выйти", "app.quit");
+
+    // Связывание модели меню с GtkPopoverMenu
+    GtkWidget *file_menu_popover = GTK_WIDGET(gtk_builder_get_object(builder, "file-menu-popover"));
+    gtk_popover_menu_set_menu_model(GTK_POPOVER_MENU(file_menu_popover), G_MENU_MODEL(file_menu));
+
+    // Установка приложения для окна
     gtk_window_set_application(GTK_WINDOW(window), app);
 
     // Загрузка CSS
