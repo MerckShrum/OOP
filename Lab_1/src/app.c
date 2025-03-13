@@ -4,6 +4,77 @@
 
 #include "../inc/app.h"
 
+typedef struct {
+    gpointer window;
+    gpointer user_data;
+} window_data_t;
+
+typedef struct {
+    int square_size;
+    GtkWidget *drawing_area;
+} AppData;
+
+static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
+    AppData *data = (AppData *)user_data;
+    int square_size = data->square_size;
+    // Рисуем квадрат
+    cairo_rectangle(cr, width / 2 - square_size / 2, height / 2 - square_size / 2, square_size, square_size);
+    cairo_stroke(cr);
+}
+
+// Обработчик ответа от диалога выбора файла
+static void on_file_dialog_response(GtkNativeDialog *dialog, int response, gpointer user_data) {
+    if (response == GTK_RESPONSE_ACCEPT) {
+        // Получаем выбранный файл
+        GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
+        if (file != NULL) {
+            char *filename = g_file_get_path(file); // Получаем путь к файлу
+            // action_t action;
+            // action_set_file(&action, filename);
+            // action_set_canvas(&action, user_data);
+
+
+
+            // AppData *data = (AppData *)user_data;
+            // Обновляем размер квадрата
+            // data->square_size = 100;
+            // Вызываем перерисовку
+            // gtk_widget_queue_draw(data->drawing_area);
+
+
+
+
+
+            g_print("Выбран файл: %s\n", filename);
+            g_free(filename); // Освобождаем память
+            g_object_unref(file); // Освобождаем объект GFile
+        }
+    }
+
+    // Закрываем диалог
+    g_object_unref(dialog);
+}
+
+// Обработчик для пункта "Открыть"
+static void on_open_action(GSimpleAction *action, GVariant *parameter, window_data_t user_data) {
+    GtkWindow *window = GTK_WINDOW(user_data.window);
+
+    // Создаём диалог выбора файла
+    GtkFileChooserNative *native = gtk_file_chooser_native_new(
+        "Открыть файл", // Заголовок диалога
+        window,         // Родительское окно
+        GTK_FILE_CHOOSER_ACTION_OPEN, // Режим открытия файла
+        "_Открыть",     // Текст на кнопке подтверждения
+        "_Отмена"       // Текст на кнопке отмены
+    );
+
+    // Подключаем обработчик сигнала "response"
+    g_signal_connect(native, "response", G_CALLBACK(on_file_dialog_response), user_data.user_data);
+
+    // Показываем диалог
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
+}
+
 static void on_button_moving_x_inc_clicked(GtkButton *button, gpointer user_data) {
     const char *message = (const char *)user_data;
     g_print("%s\n", message);
@@ -104,12 +175,34 @@ void app_activate (GtkApplication *app, gpointer *user_data) {
     GtkBuilder* builder = gtk_builder_new_from_file("../ui/mainwindow.ui");
     GObject* window = gtk_builder_get_object (builder, "mainwindow");
 
+
+
+
+
+    GtkWidget *drawing_area = GTK_WIDGET(gtk_builder_get_object(builder, "drawingArea"));
+
+    AppData *data = g_new0(AppData, 1);
+    data->square_size = 40; // Начальный размер квадрата
+    data->drawing_area = drawing_area ; // Указатель на GtkDrawingArea
+
+
+    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA (drawing_area), draw_function, data, NULL);
+
+    window_data_t window_data;
+    window_data.window = window;
+    window_data.user_data = data;
+
+
+
+
+
+
     // Создание модели меню "Файл"
     GMenu *file_menu = g_menu_new();
-    // g_menu_append(file_menu, "Новый", "app.new");
     g_menu_append(file_menu, "Открыть", "app.open");
-    // g_menu_append(file_menu, "Сохранить", "app.save");
-    // g_menu_append(file_menu, "Выйти", "app.quit");
+    GSimpleAction *open_action = g_simple_action_new("open", NULL);
+    g_signal_connect(open_action, "activate", G_CALLBACK(on_open_action), &window_data);
+    g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(open_action));
 
     // Связывание модели меню с GtkPopoverMenu
     GtkWidget *file_menu_popover = GTK_WIDGET(gtk_builder_get_object(builder, "file-menu-popover"));
@@ -174,9 +267,9 @@ void app_activate (GtkApplication *app, gpointer *user_data) {
     GtkWidget *button_scaling_z_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingZDec"));
     g_signal_connect(button_scaling_z_dec, "clicked", G_CALLBACK(on_button_scaling_z_dec_clicked), "А минусы?");
 
-
     GtkWidget *scale = GTK_WIDGET(gtk_builder_get_object(builder, "scaleFOV"));
     g_signal_connect(scale, "value-changed", G_CALLBACK(on_scale_value_changed), NULL);
+
 
     // Установка приложения для окна
     gtk_window_set_application(GTK_WINDOW(window), app);

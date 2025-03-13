@@ -6,6 +6,7 @@
 #define MAINWINDOW_H
 
 #include <gtk/gtk.h>
+#include "action.h"
 
 void app_activate (GtkApplication *app, gpointer *user_data);
 

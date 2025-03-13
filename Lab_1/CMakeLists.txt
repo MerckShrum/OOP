@@ -19,5 +19,16 @@ ADD_DEFINITIONS(${GTK4_CFLAGS_OTHER})
 
 add_executable(Lab_1 src/main.c
         src/app.c
-        inc/app.h)
+        inc/app.h
+        inc/action.h
+        src/action.c
+        inc/errors.h
+        src/processing.c
+        inc/processing.h
+        inc/scene.h
+        src/scene.c
+        inc/wire-frame_model.h
+        inc/camera.h
+        inc/canvas.h
+        src/canvas.c)
 target_link_libraries(Lab_1 PRIVATE  ${GTK4_LIBRARIES})
