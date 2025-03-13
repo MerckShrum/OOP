@@ -30,5 +30,6 @@ add_executable(Lab_1 src/main.c
         inc/wire-frame_model.h
         inc/camera.h
         inc/canvas.h
-        src/canvas.c)
+        src/canvas.c
+)
 target_link_libraries(Lab_1 PRIVATE  ${GTK4_LIBRARIES})

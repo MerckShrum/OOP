@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <requires lib="gtk" version="4.0" />
-    <object class="GtkWindow" id="mainwindow">
+    <object class="GtkApplicationWindow" id="mainwindow">
         <property name="title">Кибербуллинг</property>
         <property name="default-width">1280</property>
         <property name="default-height">720</property>
@@ -10,23 +10,25 @@
         </style>
 
 
+
+
         <child>
             <object class="GtkBox" id="main-box">
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
 
                 <!-- Кнопка меню -->
-                <child>
-                    <object class="GtkMenuButton" id="file-menu-button">
-                        <property name="label">Файл</property>
-                        <property name="hexpand">FALSE</property>
-                        <property name="halign">GTK_ALIGN_START</property>
-                        <property name="margin-start">20</property>
-                        <property name="popover">
-                            <object class="GtkPopoverMenu" id="file-menu-popover"/>
-                        </property>
-                    </object>
-                </child>
+<!--                <child>-->
+<!--                    <object class="GtkMenuButton" id="file-menu-button">-->
+<!--                        <property name="label">Файл</property>-->
+<!--                        <property name="hexpand">FALSE</property>-->
+<!--                        <property name="halign">GTK_ALIGN_START</property>-->
+<!--                        <property name="margin-start">20</property>-->
+<!--                        <property name="popover">-->
+<!--                            <object class="GtkPopoverMenu" id="file-menu-popover"/>-->
+<!--                        </property>-->
+<!--                    </object>-->
+<!--                </child>-->
 
                 <child>
                     <object class="GtkGrid" id="gridMainwindow">

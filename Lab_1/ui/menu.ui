@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <menu id="app-menu">
+        <section>
+            <item>
+                <attribute name="label">Открыть</attribute>
+                <attribute name="action">app.open</attribute>
+            </item>
+        </section>
+    </menu>
+</interface>

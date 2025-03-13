@@ -5,11 +5,6 @@
 #include "../inc/app.h"
 
 typedef struct {
-    gpointer window;
-    gpointer user_data;
-} window_data_t;
-
-typedef struct {
     int square_size;
     GtkWidget *drawing_area;
 } AppData;
@@ -20,59 +15,6 @@ static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int heig
     // Рисуем квадрат
     cairo_rectangle(cr, width / 2 - square_size / 2, height / 2 - square_size / 2, square_size, square_size);
     cairo_stroke(cr);
-}
-
-// Обработчик ответа от диалога выбора файла
-static void on_file_dialog_response(GtkNativeDialog *dialog, int response, gpointer user_data) {
-    if (response == GTK_RESPONSE_ACCEPT) {
-        // Получаем выбранный файл
-        GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
-        if (file != NULL) {
-            char *filename = g_file_get_path(file); // Получаем путь к файлу
-            // action_t action;
-            // action_set_file(&action, filename);
-            // action_set_canvas(&action, user_data);
-
-
-
-            // AppData *data = (AppData *)user_data;
-            // Обновляем размер квадрата
-            // data->square_size = 100;
-            // Вызываем перерисовку
-            // gtk_widget_queue_draw(data->drawing_area);
-
-
-
-
-
-            g_print("Выбран файл: %s\n", filename);
-            g_free(filename); // Освобождаем память
-            g_object_unref(file); // Освобождаем объект GFile
-        }
-    }
-
-    // Закрываем диалог
-    g_object_unref(dialog);
-}
-
-// Обработчик для пункта "Открыть"
-static void on_open_action(GSimpleAction *action, GVariant *parameter, window_data_t user_data) {
-    GtkWindow *window = GTK_WINDOW(user_data.window);
-
-    // Создаём диалог выбора файла
-    GtkFileChooserNative *native = gtk_file_chooser_native_new(
-        "Открыть файл", // Заголовок диалога
-        window,         // Родительское окно
-        GTK_FILE_CHOOSER_ACTION_OPEN, // Режим открытия файла
-        "_Открыть",     // Текст на кнопке подтверждения
-        "_Отмена"       // Текст на кнопке отмены
-    );
-
-    // Подключаем обработчик сигнала "response"
-    g_signal_connect(native, "response", G_CALLBACK(on_file_dialog_response), user_data.user_data);
-
-    // Показываем диалог
-    gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
 }
 
 static void on_button_moving_x_inc_clicked(GtkButton *button, gpointer user_data) {
@@ -170,106 +112,122 @@ static void on_scale_value_changed(GtkRange *scale, gpointer user_data) {
     g_print("Чел: %.2f\n", value);
 }
 
-void app_activate (GtkApplication *app, gpointer *user_data) {
+// Обработчик завершения диалога выбора файла
+static void on_file_dialog_finish(GObject *source_object, GAsyncResult *result, gpointer user_data) {
+    GtkFileDialog *dialog = GTK_FILE_DIALOG(source_object);
+    GFile *file = gtk_file_dialog_open_finish(dialog, result, NULL);
 
-    GtkBuilder* builder = gtk_builder_new_from_file("../ui/mainwindow.ui");
-    GObject* window = gtk_builder_get_object (builder, "mainwindow");
+    if (file != NULL) {
+        char *filename = g_file_get_path(file);
+        g_print("Выбран файл: %s\n", filename);
+        g_free(filename);
+        g_object_unref(file); // Освобождаем GFile
+    }
+}
+
+// Обработчик действия "Открыть"
+static void open_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data) {
+    GtkWindow *window = GTK_WINDOW(user_data);
+    GtkFileDialog *dialog;
+
+    // Создаем диалог выбора файла
+    dialog = gtk_file_dialog_new();
+    gtk_file_dialog_set_title(dialog, "Открыть файл");
+
+    // Показываем диалог (асинхронно)
+    gtk_file_dialog_open(dialog, window, NULL, on_file_dialog_finish, NULL);
+}
 
 
 
+void app_activate(GtkApplication *app, gpointer *user_data) {
+    // Загружаем интерфейс из файла
+    GtkBuilder *builder_mainwindow = gtk_builder_new_from_file("../ui/mainwindow.ui");
+    GObject *window = gtk_builder_get_object(builder_mainwindow, "mainwindow");
 
+    // Явно приводим окно к GtkApplicationWindow
+    GtkApplicationWindow *app_window = GTK_APPLICATION_WINDOW(window);
 
-    GtkWidget *drawing_area = GTK_WIDGET(gtk_builder_get_object(builder, "drawingArea"));
+    // Загружаем меню из UI-файла
+    GtkBuilder *builder_menu = gtk_builder_new_from_file("../ui/menu.ui");
+    GMenuModel *menu = G_MENU_MODEL(gtk_builder_get_object(builder_menu, "app-menu"));
 
+    // Устанавливаем меню в приложение
+    gtk_application_set_menubar(GTK_APPLICATION(app), menu);
+
+    // Получаем GtkDrawingArea
+    GtkWidget *drawing_area = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "drawingArea"));
+
+    // Создаем структуру данных для рисования
     AppData *data = g_new0(AppData, 1);
-    data->square_size = 40; // Начальный размер квадрата
-    data->drawing_area = drawing_area ; // Указатель на GtkDrawingArea
+    data->square_size = 80; // Начальный размер квадрата
+    data->drawing_area = drawing_area; // Указатель на GtkDrawingArea
 
+    // Устанавливаем функцию рисования
+    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_function, data, NULL);
 
-    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA (drawing_area), draw_function, data, NULL);
-
-    window_data_t window_data;
-    window_data.window = window;
-    window_data.user_data = data;
-
-
-
-
-
-
-    // Создание модели меню "Файл"
-    GMenu *file_menu = g_menu_new();
-    g_menu_append(file_menu, "Открыть", "app.open");
+    // Регистрируем действие "open" в приложении
     GSimpleAction *open_action = g_simple_action_new("open", NULL);
-    g_signal_connect(open_action, "activate", G_CALLBACK(on_open_action), &window_data);
+    g_signal_connect(open_action, "activate", G_CALLBACK(open_activated), app_window);
     g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(open_action));
 
-    // Связывание модели меню с GtkPopoverMenu
-    GtkWidget *file_menu_popover = GTK_WIDGET(gtk_builder_get_object(builder, "file-menu-popover"));
-    gtk_popover_menu_set_menu_model(GTK_POPOVER_MENU(file_menu_popover), G_MENU_MODEL(file_menu));
-
-    // Получаем кнопку из интерфейса
-    GtkWidget *button_moving_x_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonMovingXInc"));
-    // Подключаем обработчик сигнала "clicked" с пользовательскими данными
+    // Подключаем обработчики кнопок
+    GtkWidget *button_moving_x_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonMovingXInc"));
     g_signal_connect(button_moving_x_inc, "clicked", G_CALLBACK(on_button_moving_x_inc_clicked), "Чел, кринжуешь");
 
-    GtkWidget *button_moving_x_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonMovingXDec"));
+    GtkWidget *button_moving_x_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonMovingXDec"));
     g_signal_connect(button_moving_x_dec, "clicked", G_CALLBACK(on_button_moving_x_dec_clicked), "Чел, суперкринжуешь");
 
-    GtkWidget *button_moving_y_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonMovingYInc"));
+    GtkWidget *button_moving_y_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonMovingYInc"));
     g_signal_connect(button_moving_y_inc, "clicked", G_CALLBACK(on_button_moving_y_inc_clicked), "Чел, мегакринжуешь");
 
-    GtkWidget *button_moving_y_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonMovingYDec"));
+    GtkWidget *button_moving_y_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonMovingYDec"));
     g_signal_connect(button_moving_y_dec, "clicked", G_CALLBACK(on_button_moving_y_dec_clicked), "Чел, ультракринжуешь");
 
-    GtkWidget *button_moving_z_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonMovingZInc"));
+    GtkWidget *button_moving_z_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonMovingZInc"));
     g_signal_connect(button_moving_z_inc, "clicked", G_CALLBACK(on_button_moving_z_inc_clicked), "Чел, гигакринжуешь");
 
-    GtkWidget *button_moving_z_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonMovingZDec"));
+    GtkWidget *button_moving_z_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonMovingZDec"));
     g_signal_connect(button_moving_z_dec, "clicked", G_CALLBACK(on_button_moving_z_dec_clicked), "Чел, пиздец как кринжуешь");
 
-
-
-    GtkWidget *button_rotation_x_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonRotationXInc"));
+    GtkWidget *button_rotation_x_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonRotationXInc"));
     g_signal_connect(button_rotation_x_inc, "clicked", G_CALLBACK(on_button_rotation_x_inc_clicked), "Что с лицом?");
 
-    GtkWidget *button_rotation_x_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonRotationXDec"));
+    GtkWidget *button_rotation_x_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonRotationXDec"));
     g_signal_connect(button_rotation_x_dec, "clicked", G_CALLBACK(on_button_rotation_x_dec_clicked), "Что с мордой лица?");
 
-    GtkWidget *button_rotation_y_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonRotationYInc"));
+    GtkWidget *button_rotation_y_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonRotationYInc"));
     g_signal_connect(button_rotation_y_inc, "clicked", G_CALLBACK(on_button_rotation_y_inc_clicked), "Что с рожей?");
 
-    GtkWidget *button_rotation_y_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonRotationYDec"));
+    GtkWidget *button_rotation_y_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonRotationYDec"));
     g_signal_connect(button_rotation_y_dec, "clicked", G_CALLBACK(on_button_rotation_y_dec_clicked), "Что с физиономией?");
 
-    GtkWidget *button_rotation_z_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonRotationZInc"));
+    GtkWidget *button_rotation_z_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonRotationZInc"));
     g_signal_connect(button_rotation_z_inc, "clicked", G_CALLBACK(on_button_rotation_z_inc_clicked), "Что с таблом?");
 
-    GtkWidget *button_rotation_z_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonRotationZDec"));
+    GtkWidget *button_rotation_z_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonRotationZDec"));
     g_signal_connect(button_rotation_z_dec, "clicked", G_CALLBACK(on_button_rotation_z_dec_clicked), "Что с хлеборезкой?");
 
-
-    GtkWidget *button_scaling_x_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingXInc"));
+    GtkWidget *button_scaling_x_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonScalingXInc"));
     g_signal_connect(button_scaling_x_inc, "clicked", G_CALLBACK(on_button_scaling_x_inc_clicked), "Минусы?");
 
-    GtkWidget *button_scaling_x_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingXDec"));
+    GtkWidget *button_scaling_x_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonScalingXDec"));
     g_signal_connect(button_scaling_x_dec, "clicked", G_CALLBACK(on_button_scaling_x_dec_clicked), "Минусы будут?");
 
-    GtkWidget *button_scaling_y_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingYInc"));
+    GtkWidget *button_scaling_y_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonScalingYInc"));
     g_signal_connect(button_scaling_y_inc, "clicked", G_CALLBACK(on_button_scaling_y_inc_clicked), "А по минусам?");
 
-    GtkWidget *button_scaling_y_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingYDec"));
+    GtkWidget *button_scaling_y_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonScalingYDec"));
     g_signal_connect(button_scaling_y_dec, "clicked", G_CALLBACK(on_button_scaling_y_dec_clicked), "Минусов не вижу");
 
-    GtkWidget *button_scaling_z_inc = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingZInc"));
+    GtkWidget *button_scaling_z_inc = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonScalingZInc"));
     g_signal_connect(button_scaling_z_inc, "clicked", G_CALLBACK(on_button_scaling_z_inc_clicked), "Чел, назови минусы");
 
-    GtkWidget *button_scaling_z_dec = GTK_WIDGET(gtk_builder_get_object(builder, "buttonScalingZDec"));
+    GtkWidget *button_scaling_z_dec = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "buttonScalingZDec"));
     g_signal_connect(button_scaling_z_dec, "clicked", G_CALLBACK(on_button_scaling_z_dec_clicked), "А минусы?");
 
-    GtkWidget *scale = GTK_WIDGET(gtk_builder_get_object(builder, "scaleFOV"));
+    GtkWidget *scale = GTK_WIDGET(gtk_builder_get_object(builder_mainwindow, "scaleFOV"));
     g_signal_connect(scale, "value-changed", G_CALLBACK(on_scale_value_changed), NULL);
-
 
     // Установка приложения для окна
     gtk_window_set_application(GTK_WINDOW(window), app);
@@ -286,7 +244,10 @@ void app_activate (GtkApplication *app, gpointer *user_data) {
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
 
-    g_object_unref (builder);
+    // Освобождаем GtkBuilder
+    g_object_unref(builder_menu);
+    g_object_unref(builder_mainwindow);
+
     // Показ окна
     gtk_window_present(GTK_WINDOW(window));
 }
